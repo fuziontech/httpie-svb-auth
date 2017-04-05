@@ -16,7 +16,7 @@ except ImportError:
     from urllib.parse import urlparse
 
 
-class SVBAuth:
+class SVBAuth(object):
 
     def __init__(self, api_key, hmac_secret):
         self.api_key = api_key
