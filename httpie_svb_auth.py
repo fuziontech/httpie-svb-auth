@@ -19,8 +19,13 @@ except ImportError:
 class SVBAuth:
 
     def __init__(self, api_key, hmac_secret):
+        self.key_id = None
+        self.hmac_secret = None
         self.api_key = api_key
-        self.hmac_secret = bytearray(hmac_secret, 'ascii')
+        if "keyid=" in hmac_secret:
+            self.key_id = hmac_secret.split("=")[-1:]
+        else:
+            self.hmac_secret = bytearray(hmac_secret, 'ascii')
 
     def __call__(self, r):
         timestamp = str(int(time.time()))
@@ -34,18 +39,22 @@ class SVBAuth:
         else:
             body = ''
 
-        str_to_sign = '\n'.join([timestamp,
-                                 r.method.upper(),
-                                 url.path,
-                                 url.query,
-                                 body]) \
-                          .encode('ascii')
-        signature = hmac.new(self.hmac_secret, str_to_sign, hashlib.sha256) \
-                        .hexdigest()
+        if self.hmac_secret:
+            str_to_sign = '\n'.join([timestamp,
+                                    r.method.upper(),
+                                    url.path,
+                                    url.query,
+                                    body]) \
+                            .encode('ascii')
+            signature = hmac.new(self.hmac_secret, str_to_sign, hashlib.sha256) \
+                            .hexdigest()
 
+            r.headers['X-Signature'] = signature
+            r.headers['X-Timestamp'] = timestamp
+        elif self.key_id:
+            r.headers['X-Key-Id'] = self.key_id
+            
         r.headers['Authorization'] = 'Bearer ' + self.api_key
-        r.headers['X-Signature'] = signature
-        r.headers['X-Timestamp'] = timestamp
         return r
 
 
