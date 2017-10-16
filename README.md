@@ -23,6 +23,11 @@ respectively). For example:
 http -A svb -a "${SVB_API_KEY}:${SVB_HMAC_SECRET}" https://api.svb.com/
 ```
 
+For local dev of the api you should use this:
+```sh
+http -A svb -a "keyid=${SVB_KEY_ID}:${SVB_HMAC_SECRET}" http://127.0.0.1:4000/
+```
+
 # License
 
 Copyright (c) 2017 Silicon Valley Bank. Distributed under the MIT License.
