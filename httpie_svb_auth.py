@@ -25,7 +25,7 @@ class SVBAuth:
 
         self.hmac_secret = bytearray(hmac_secret, 'ascii') if hmac_secret else None
 
-        if "&" in api_key:
+        if "keyid" in api_key or "companyid" in api_key and "&" in api_key:
             keys = api_key.split('&')
         else:
             keys = list(api_key)
