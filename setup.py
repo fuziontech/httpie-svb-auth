@@ -3,7 +3,7 @@
 from setuptools import setup
 
 setup(name='httpie-svb-auth',
-      version='1.0.2',
+      version='1.0.4',
       description='SVB API auth plugin for HTTPie.',
       author='Jim Brusstar',
       author_email='jim.brusstar@gmail.com',

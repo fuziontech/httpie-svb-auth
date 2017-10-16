@@ -29,7 +29,7 @@ class SVBAuth:
         if url.scheme != 'https':
             raise requests.RequestException('SVB auth requires https!')
 
-        if r.headers.get('Content-Type', '').startswith('application/json'):
+        if r.headers.get('Content-Type', b'').startswith(b'application/json'):
             body = r.body
         else:
             body = ''
