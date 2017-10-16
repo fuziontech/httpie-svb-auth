@@ -21,13 +21,11 @@ class SVBAuth:
     def __init__(self, api_key, hmac_secret):
         self.api_key = None
         self.key_id = None
-        self.hmac_secret = None
         
-        if hmac_secret:
-            self.hmac_secret = bytearray(hmac_secret, 'ascii')
+        self.hmac_secret = bytearray(hmac_secret, 'ascii') if hmac_secret else None
 
         if "keyid=" in api_key:
-            self.key_id = api_key.split("=")[-1:]
+            self.key_id = str(api_key.split("=")[-1:])
         else:
             self.api_key = api_key
 
@@ -36,7 +34,8 @@ class SVBAuth:
         url = urlparse(r.url)
 
         if url.scheme != 'https':
-            raise requests.RequestException('SVB auth requires https!')
+            if '127.0.0.1' not in url.netloc:
+                raise requests.RequestException('SVB auth requires https!')
 
         if r.headers.get('Content-Type', b'').startswith(b'application/json'):
             body = r.body
